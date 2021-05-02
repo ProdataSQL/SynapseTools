@@ -2,7 +2,7 @@
 Prodata sample scripts and tools for managing Synapse and SQLPools.
 
 
-##Monitoring
+## Monitoring
 Collection of views and SProcs for helping monitor SQL Pools including
 * Requests View. 
 Showing  all requests and an analysis of step timing. use this to spot shuffles, movement and other performance issues
