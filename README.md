@@ -1,12 +1,9 @@
 # SynapseTools
 Prodata Sample Scripts for Syanpse SQL Pool Maintenance and Monitoring
 
-
-
-## Maintenance
 The Maintenance Scripts support two key SProcs to help maintaing Syanpse SQL Pools <a>ColumnStoreOptimize</a> and StatsOptimize.
-<BR>These implement best practise maintenance in the same style as the populae <a>ola hallogren scripts</a> for SQL Server DB Engine. 
-Note that maintenance on Syanpse SQL Pools is very different than the traditional DB Engine due to scale out archietcture and less DMVs exposed to track usage.
+These implement best practise maintenance in the same style as the popular [[ola hallogren scripts](https://ola.hallengren.com/) for SQL Server DB Engine. 
+Note that maintenance on Synapse SQL Pools is very different than the traditional DB Engine due to scale out archietcture and less DMVs exposed to track usage.
 
 
 ### Getting Started
