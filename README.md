@@ -1,8 +1,37 @@
 # SynapseTools
-Prodata sample scripts and tools for managing Synapse and SQLPools.
+Prodata Sample Scripts for Syanpse SQL Pool Maintenance and Monitoring
+
 
 
 ## Monitoring
+
+
+## Maintenance
+The Maintenance Scripts support two key SProcs to help maintaing Syanpse SQL Pools <a>ColumnStoreOptimize</a> and StatsOptimize.
+<BR>These implement best practise maintenance in the same style as the populae <a>ola hallogren scripts</a> for SQL Server DB Engine. 
+Note that maintenance on Syanpse SQL Pools is very different than the traditional DB Engine due to scale out archietcture and less DMVs exposed to track usage.
+
+
+## Getting Started
+Download and run <a>Maintenance Solution</a>. This script creates all objects inside your SQL Pool. To run the SProcs create an ADF package, or other way to run the SProc on a schedule or as part of your ETL orchestration
+
+## StatsOptimise
+StatsOptimise is stored procedure for updating and other miantenance of Statistics for Synapse SQL Pools based on Best practise guidance from MS sites below and community.
+- https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/develop-tables-statistics
+- https://ola.hallengren.com/
+- https://github.com/abrahams1/Azure_Synapse_Toolbox/tree/master/SQL_Queries/Statistics 
+- https://www.sqlskills.com/blogs/tim/when-updating-statistics-is-too-expensive/
+- https://www.sqlskills.com/blogs/erin/updating-statistics-with-ola-hallengrens-script/
+- https://docs.microsoft.com/en-us/sql/relational-databases/statistics/statistics?view=sql-server-2017 
+
+
+## Usage: 
+exec [dbo].[StatsOptimize] , @Tables, @StatisticsModificationLevel, @StatisticsSample ,@OnlyModifiedStatistics,@DeleteOverlappingStats, @TimeLimit , @Execute 	
+
+## Prameters
+
+### @Tables 
+
 Collection of views and SProcs for helping monitor SQL Pools including
 * Requests View. 
 Showing  all requests and an analysis of step timing. use this to spot shuffles, movement and other performance issues

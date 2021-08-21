@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "..\\..\\..\\..\\AdventureWorks\\AdventureWorks\\Labs\\04-Extract-Automation"
+		},
+		{
+			"name": "AdventureWorks",
+			"path": "..\\..\\..\\..\\AdventureWorks\\AdventureWorks\\Labs\\AdventureWorks"
+		},
+		{
+			"path": "..\\..\\..\\..\\AdventureWorks\\AdventureWorks\\Labs\\05-Load-Automation"
+		}
+	],
+	"settings": {}
+}
