@@ -13,7 +13,7 @@ Note that maintenance on Syanpse SQL Pools is very different than the traditiona
 
 
 ## Getting Started
-Download and run <a>Maintenance Solution</a>. This script creates all objects inside your SQL Pool. To run the SProcs create an ADF package, or other way to run the SProc on a schedule or as part of your ETL orchestration
+Download and run [Maintenance Solution[(https://github.com/ProdataSQL/SynapseTools/blob/main/SqlPools/Maintenance/MaintenanceSolution.sql). This script creates all objects inside your SQL Pool. To run the SProcs create an ADF package, or other way to run the SProc on a schedule or as part of your ETL orchestration
 
 ## StatsOptimise
 StatsOptimise is stored procedure for updating and other miantenance of Statistics for Synapse SQL Pools based on Best practise guidance from MS sites below and community.
@@ -28,14 +28,26 @@ StatsOptimise is stored procedure for updating and other miantenance of Statisti
 ## Usage: 
 exec [dbo].[StatsOptimize] , @Tables, @StatisticsModificationLevel, @StatisticsSample ,@OnlyModifiedStatistics,@DeleteOverlappingStats, @TimeLimit , @Execute 	
 
-## Prameters
+## Parameters
 
 ### @Tables 
+
+### @StatisticsModificationLevel
+
+### @StatisticsSample 
+
+### @OnlyModifiedStatistics
+
+### @DeleteOverlappingStats
+
+### @TimeLimit 
+
+### @Execute 	
 
 Collection of views and SProcs for helping monitor SQL Pools including
 * Requests View. 
 Showing  all requests and an analysis of step timing. use this to spot shuffles, movement and other performance issues
-* sp_WhoIsActive. A wrapper for the Requests View showing currently runing requests and timing
+* [sp_WhoIsActive](https://github.com/ProdataSQL/SynapseTools/blob/main/SqlPools/Monitoring/sp_WhoIsActive.sql). A wrapper for the Requests View showing currently runing requests and timing
 (Shout out to the much fuller and awesome SQL Engine http://whoisactive.com/ by Adam Machanic )
-* sp_WhoWasActive. A wrapper for the Requests View showing historical requests and timing.
+* [sp_WhoWasActive](https://github.com/ProdataSQL/SynapseTools/blob/main/SqlPools/Monitoring/sp_WhoWasActive.sql). A wrapper for the Requests View showing historical requests and timing.
 
