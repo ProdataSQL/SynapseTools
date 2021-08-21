@@ -3,19 +3,16 @@ Prodata Sample Scripts for Syanpse SQL Pool Maintenance and Monitoring
 
 
 
-## Monitoring
-
-
 ## Maintenance
 The Maintenance Scripts support two key SProcs to help maintaing Syanpse SQL Pools <a>ColumnStoreOptimize</a> and StatsOptimize.
 <BR>These implement best practise maintenance in the same style as the populae <a>ola hallogren scripts</a> for SQL Server DB Engine. 
 Note that maintenance on Syanpse SQL Pools is very different than the traditional DB Engine due to scale out archietcture and less DMVs exposed to track usage.
 
 
-## Getting Started
-Download and run [Maintenance Solution[(https://github.com/ProdataSQL/SynapseTools/blob/main/SqlPools/Maintenance/MaintenanceSolution.sql). This script creates all objects inside your SQL Pool. To run the SProcs create an ADF package, or other way to run the SProc on a schedule or as part of your ETL orchestration
+### Getting Started
+Download and run [Maintenance Solution](https://github.com/ProdataSQL/SynapseTools/blob/main/SqlPools/Maintenance/MaintenanceSolution.sql). This script creates all objects inside your SQL Pool. To run the SProcs create an ADF package, or other way to run the SProc on a schedule or as part of your ETL orchestration
 
-## StatsOptimise
+### StatsOptimise
 StatsOptimise is stored procedure for updating and other miantenance of Statistics for Synapse SQL Pools based on Best practise guidance from MS sites below and community.
 - https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/develop-tables-statistics
 - https://ola.hallengren.com/
@@ -25,25 +22,28 @@ StatsOptimise is stored procedure for updating and other miantenance of Statisti
 - https://docs.microsoft.com/en-us/sql/relational-databases/statistics/statistics?view=sql-server-2017 
 
 
-## Usage: 
+### Usage: 
 exec [dbo].[StatsOptimize] , @Tables, @StatisticsModificationLevel, @StatisticsSample ,@OnlyModifiedStatistics,@DeleteOverlappingStats, @TimeLimit , @Execute 	
 
-## Parameters
+#### Parameters
 
-### @Tables 
+##### @Tables 
 
-### @StatisticsModificationLevel
+#### @StatisticsModificationLevel
 
-### @StatisticsSample 
+#### @StatisticsSample 
 
-### @OnlyModifiedStatistics
+#### @OnlyModifiedStatistics
 
-### @DeleteOverlappingStats
+#### @DeleteOverlappingStats
 
-### @TimeLimit 
+#### @TimeLimit 
 
-### @Execute 	
+#### @Execute 	
 
+
+
+## Monitoring
 Collection of views and SProcs for helping monitor SQL Pools including
 * Requests View. 
 Showing  all requests and an analysis of step timing. use this to spot shuffles, movement and other performance issues
