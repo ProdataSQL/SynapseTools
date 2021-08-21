@@ -9,7 +9,7 @@ Note that maintenance on Synapse SQL Pools is very different than the traditiona
 ### Getting Started
 Download and run [Maintenance Solution](https://github.com/ProdataSQL/SynapseTools/blob/main/SqlPools/Maintenance/MaintenanceSolution.sql). This script creates all objects inside your SQL Pool. To run the SProcs create an ADF package, or other way to run the SProc on a schedule or as part of your ETL orchestration
 
-### StatsOptimise
+## StatsOptimise
 StatsOptimise is stored procedure for updating and other miantenance of Statistics for Synapse SQL Pools based on Best practise guidance from MS sites below and community.
 - https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/develop-tables-statistics
 - https://ola.hallengren.com/
