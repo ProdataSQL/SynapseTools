@@ -131,7 +131,7 @@ BEGIN
 		having max(p.Op) ='+'
 		)
 		SELECT 	ROW_NUMBER() OVER (ORDER BY cs.schema_name, cs.table_name, cs.partition_number) as ID  , cs.object_id,  quotename(cs.schema_name) + '.' + quotename(cs.table_name)  as table_name, cs.schema_name, cs.table_name as object_name, cs.partition_number, ''
-		+  CASE WHEN cs.[fragmentation_deletes] >  @DeleteThreshold  and @DeleteThreshold  >= 0 then 'REBUILD ' + coalesce(' PARTITION=' + convert(varchar,cs.partition_number) ,'') 
+		+  CASE WHEN cs.deleted_row_count >  @DeleteThreshold  and @DeleteThreshold  >= 0 then 'REBUILD ' + coalesce(' PARTITION=' + convert(varchar,cs.partition_number) ,'') 
 				WHEN cs.open_row_count >= @OpenThreshold and @OpenThreshold > -1  then 'REORGANIZE' +   coalesce(' PARTITION=' + convert(varchar,cs.partition_number),'') + ' WITH (COMPRESS_ALL_ROW_GROUPS = ON)'	
 				WHEN cs.[fragmentation_density] >= @DensityThreshold and cs.[compressed_rowgroup_count] > @MinRowgroupCount and @DensityThreshold  > -1  then 'REORGANIZE' + coalesce(' PARTITION=' + convert(varchar,cs.partition_number),'')
 				ELSE 'N/A'
@@ -150,7 +150,7 @@ BEGIN
 		INNER JOIN sys.indexes i on i.object_id=cs.object_id and i.type=5 /* Ony CCS */
 		INNER JOIN ParamTables t on t.object_id=cs.object_id 
 		WHERE (cs.[fragmentation_density] > @DensityThreshold and cs.[compressed_rowgroup_count] > @MinRowgroupCount and @DensityThreshold >=0 )
-		OR (cs.[fragmentation_deletes] >  @DeleteThreshold  and @DeleteThreshold  > -1)
+		OR (cs.deleted_row_count >  @DeleteThreshold  and @DeleteThreshold  > -1)
 		OR (cs.open_row_count >= @OpenThreshold and @OpenThreshold > -1)
 		 
 	SELECT TOP 1 @ID=ID,@ProcStartTime =getdate(), @Duration =0 FROM #work_queue ORDER BY ID

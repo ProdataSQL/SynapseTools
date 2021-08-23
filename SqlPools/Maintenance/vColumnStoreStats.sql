@@ -33,6 +33,7 @@ ALTER VIEW [dbo].[vColumnstoreStats] AS WITH ColumnStats as (
 		INNER JOIN sys.[schemas] s ON t.[schema_id] = s.[schema_id]
 		INNER JOIN sys.indexes i on i.object_id=t.object_id and i.type=5 /* CCI */
 		LEFT JOIN sys.partition_schemes ps   on i.data_space_id=ps.data_space_id
+		WHERE rg.[State] IN (1,3)
 	)
 	SELECT getdate() AS [execution_date]
 	, DB_Name()		 AS [database_name]
