@@ -1,50 +1,38 @@
 # SynapseTools
-Prodata Sample Scripts for Syanpse SQL Pool Maintenance and Monitoring
+## Welcome
+Welcome to the [Prodata](https://www.prodata.ie) open source library for dedicated SQL Pool maintenance and monitoring. The code contained here is open source/free with no warranty or support implied. Feel free to ping me bob@prodata.ie if you found it useful.
 
-The Maintenance Scripts support two key SProcs to help maintaing Syanpse SQL Pools <a>ColumnStoreOptimize</a> and StatsOptimize.
-These implement best practise maintenance in the same style as the popular [[ola hallogren scripts](https://ola.hallengren.com/) for SQL Server DB Engine. 
+
+## Getting Started
+* Install Maintenance Solution from [MaintenanceSolution.sql](https://github.com/ProdataSQL/SynapseTools/blob/main/SqlPools/Maintenance/MaintenanceSolution.sql)
+* View [Maintenance Source Code](https://github.com/ProdataSQL/SynapseTools/blob/main/SqlPools/Maintenance)
+* View [Monitoring Source Code](https://github.com/ProdataSQL/SynapseTools/blob/main/SqlPools/Monitoring)
+
+Click on one of the above linkes ot get started or you can read more details, syntax and example from the below  section
+
+
+## SQL Pool Maintenance Solution
+Goto [Maintenance](https://github.com/ProdataSQL/SynapseTools/blob/main/SqlPools/Maintenance) for details on the Synapse SQL Pool maintenance solutiuon for Columnstore and Statistics maintenance.
+https://github.com/ProdataSQL/SynapseTools/blob/main/SqlPools/Maintenance
+
+This solution will help automate daily/weekly maintenance in a simialr syntax to the ubiquitous  [Ola Hallogren SQL Maintenance Solution](https://ola.hallengren.com/), but for SQL dedicated Pools.
+
 Note that maintenance on Synapse SQL Pools is very different than the traditional DB Engine due to scale out archietcture and less DMVs exposed to track usage.
 
 
-### Getting Started
-Download and run [Maintenance Solution](https://github.com/ProdataSQL/SynapseTools/blob/main/SqlPools/Maintenance/MaintenanceSolution.sql). This script creates all objects inside your SQL Pool. To run the SProcs create an ADF package, or other way to run the SProc on a schedule or as part of your ETL orchestration
+## SQL Pool Monitoring
+Selection of sample stored procedures to help with SQL Pool monitoring based on the SQL Pool DMVs and the awesome  [sp_WhoIsActive](http://whoisactive.com/) from [Adam machanic](http://dataeducation.com/about/). Albeit a lot more limited due to restrictions in SQL Pool DMVs.
 
-## StatsOptimise
-StatsOptimise is stored procedure for updating and other miantenance of Statistics for Synapse SQL Pools based on Best practise guidance from MS sites below and community.
-- https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/develop-tables-statistics
-- https://ola.hallengren.com/
-- https://github.com/abrahams1/Azure_Synapse_Toolbox/tree/master/SQL_Queries/Statistics 
-- https://www.sqlskills.com/blogs/tim/when-updating-statistics-is-too-expensive/
-- https://www.sqlskills.com/blogs/erin/updating-statistics-with-ola-hallengrens-script/
-- https://docs.microsoft.com/en-us/sql/relational-databases/statistics/statistics?view=sql-server-2017 
+https://github.com/ProdataSQL/SynapseTools/tree/main/SqlPools/Monitoring
 
-
-### Usage: 
-exec [dbo].[StatsOptimize] , @Tables, @StatisticsModificationLevel, @StatisticsSample ,@OnlyModifiedStatistics,@DeleteOverlappingStats, @TimeLimit , @Execute 	
-
-#### Parameters
-
-##### @Tables 
-
-#### @StatisticsModificationLevel
-
-#### @StatisticsSample 
-
-#### @OnlyModifiedStatistics
-
-#### @DeleteOverlappingStats
-
-#### @TimeLimit 
-
-#### @Execute 	
-
-
-
-## Monitoring
-Collection of views and SProcs for helping monitor SQL Pools including
-* Requests View. 
+Views and SProcs include
+* [Requests](https://github.com/ProdataSQL/SynapseTools/blob/main/SqlPools/Monitoring/Requests.sql) View. 
 Showing  all requests and an analysis of step timing. use this to spot shuffles, movement and other performance issues
 * [sp_WhoIsActive](https://github.com/ProdataSQL/SynapseTools/blob/main/SqlPools/Monitoring/sp_WhoIsActive.sql). A wrapper for the Requests View showing currently runing requests and timing
-(Shout out to the much fuller and awesome SQL Engine http://whoisactive.com/ by Adam Machanic )
 * [sp_WhoWasActive](https://github.com/ProdataSQL/SynapseTools/blob/main/SqlPools/Monitoring/sp_WhoWasActive.sql). A wrapper for the Requests View showing historical requests and timing.
+
+
+
+
+
 
