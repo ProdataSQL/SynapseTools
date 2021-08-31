@@ -121,9 +121,9 @@ Select Tables nd optionally columns to be included. The minus character is used 
 |--|--|
 | Null | All Tables in Pool |
 | dbo.% | Tables in dbo schema  |
-| %.Fact% | All Fact tables, regardless of Schema |
+| %.Fact% | All Fact tables (prefix of Fact), regardless of Schema |
 | %.Fact%,-FactBig | All Fact tables, Except one called FactBig |
-| %.%.DateKey | ONLY do stats maintenance on DateKey column. 
+| %.%.Date,%.%.AccountKey | ONLY do stats maintenance on Date and AccountKey columns. 
 
 Note that usually we just do stats maintenance at the table level, but there is also support for specifing column(s). This is a special case to support columns that need frequent updates like low cardinatlity incremental values (Eg Business Date) which is recommended by Microsoft [here](https://docs.microsoft.com/en-us/azure/synapse-analytics/sql/develop-tables-statistics)
 
