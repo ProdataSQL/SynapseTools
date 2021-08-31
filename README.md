@@ -28,7 +28,7 @@ https://github.com/ProdataSQL/SynapseTools/tree/main/SqlPools/Monitoring
 Views and SProcs include
 * [Requests](https://github.com/ProdataSQL/SynapseTools/blob/main/SqlPools/Monitoring/Requests.sql) View. 
 Showing  all requests and an analysis of step timing. use this to spot shuffles, movement and other performance issues
-* [sp_WhoIsActive](https://github.com/ProdataSQL/SynapseTools/blob/main/SqlPools/Monitoring/sp_WhoIsActive.sql). A wrapper for the Requests View showing currently runing requests and timing
+* [sp_WhoIsActive](https://github.com/ProdataSQL/SynapseTools/blob/main/SqlPools/Monitoring/sp_WhoIsActive.sql). A wrapper for the Requests View showing currently running requests and timing
 * [sp_WhoWasActive](https://github.com/ProdataSQL/SynapseTools/blob/main/SqlPools/Monitoring/sp_WhoWasActive.sql). A wrapper for the Requests View showing historical requests and timing.
 
 

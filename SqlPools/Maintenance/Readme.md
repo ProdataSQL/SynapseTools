@@ -2,10 +2,10 @@
 
 
 ## ColumnstoreOptimize
-ColumnstoreOptimize is stored procedure for maintaining columnstore indexes in SQL dedicated Pools. Key features include
-- Automatically determine if REORGANISE requried based on density
-- Automatically support closin open rowgroups with threshold
-- Automatically support removing deleted rowgs from the delat store based on threshold
+ColumnstoreOptimize is stored procedure for maintaining columnstore indexes in SQL dedicated Pools. Key features include.
+- Automatically determine if REORGANISE or REBUILD requried based on density, open rows and deleted rows.
+- Automatically support closin open rowgroups with threshold.
+- Automatically support removing deleted rowgs from the delat store based on threshold.
 - [Ola Hallogren](https://ola.hallengren.com/) style features such as CommandLog, @Time Limit, and @Table parameer to set scope.
 
 All executed commands are logged to the [CommandLog](https://github.com/ProdataSQL/SynapseTools/blob/main/SqlPools/Maintenance/CommandLog.sql) table. 
@@ -94,7 +94,7 @@ StatsOptimise is stored procedure for updating Statistics for Synapse SQL Pools.
 Key features include:
 - Dynamic determine modification level based on imporved algorithm.
 - Dynamically determine sampling level or support setting sample level.
-- Support removal of duplicate statistics (covering same column)
+- Support removal of duplicate statistics (covering same column).
 - [Ola Hallogren](https://ola.hallengren.com/) style features such as CommandLog, @Time Limit, and @Table parameer to set scope.
 
 All executed commands are logged to the [CommandLog](https://github.com/ProdataSQL/SynapseTools/blob/main/SqlPools/Maintenance/CommandLog.sql) table. 
