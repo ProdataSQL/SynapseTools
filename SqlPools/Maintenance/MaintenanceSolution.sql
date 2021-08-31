@@ -450,7 +450,7 @@ GO
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[StatsOptimize]') AND type in (N'P'))
 EXEC dbo.sp_executesql @statement = N'CREATE PROC [dbo].[StatsOptimize] AS SELECT 1 as Dummy'
 GO
-ALTER PROC [dbo].[StatsOptimize] @Tables [varchar](4000),@StatisticsModificationLevel [int],@StatisticsSample [int],@OnlyModifiedStatistics [char](1),@DeleteOverlappingStats [char](1),@TimeLimit [int],@Execute [char](1) AS
+ALTER  PROC [dbo].[StatsOptimize] @Tables [varchar](4000),@StatisticsModificationLevel [int],@StatisticsSample [int],@OnlyModifiedStatistics [char](1),@DeleteOverlappingStats [char](1),@TimeLimit [int],@Execute [char](1) AS
 BEGIN
 /*
 description:	Stats Maintenance for Synapse SQL Pools
@@ -465,21 +465,22 @@ Example:
 	exec dbo.[StatsOptimize] null,null,null,null,null,null,null
 
 	--Exclude 1 Table and use a 5% change threshold (plus auto at SQRT algorithm). Dont add Missing Stats or Delete Overlapping Stats
-	exec [StatsOptimize] @Tables'ALL,-FactFinance', @Columns=nill, ,@StatisticsModificationLevel=5, @StatisticsSample=null, @DeleteOverlappingStats ='N',@Exdcute='Y'
+	exec [StatsOptimize] @Tables='ALL,-FactFinance',  @StatisticsModificationLevel=5, @StatisticsSample=null,@OnlyModifiedStatistics ='Y' ,@DeleteOverlappingStats ='N', @TimeLimit=null,@Execute='N'
 
 	--Stats Updates with FULL Sample (no missing or de-dupe), only if > 10% difference. Stop after 1 hour
-	exec [StatsOptimize] null,null,10,100,'Y','N',3600,'Y'
+	exec [StatsOptimize] null,10,100,'Y','N',3600,'N'
 
 	--Stats Updates just in dbo Schema
-	exec [StatsOptimize] @Tables='dbo.%' ,@StatisticsModificationLevel =null, @StatisticsSample=null, @OnlyModifiedStatistics=null,@DeleteOverlappingStats=null,@TimeLimit=null,@Execute=null
+	exec [StatsOptimize] @Tables='dbo.%' ,@StatisticsModificationLevel =null, @StatisticsSample=null, @OnlyModifiedStatistics=null,@DeleteOverlappingStats=null,@TimeLimit=null,@Execute='N'
 	
 	--Only Delete Overlapping Statistics
-	exec dbo.[StatsOptimize] null,null,null,'N','Y',null,null
+	exec dbo.[StatsOptimize] null,null,null,'N','Y',null,'N'
 
 	--Force Update of All Stats in STG Schema
 	exec dbo.[StatsOptimize] 'stg.%',0,null,null,null,null,null
 
 History:		12/08/2021 Bob, Created
+				31/08/2021 Bob, Added Adaptive SamplingRate. Fixerd bug in removing duplicate stats (null stats name)
 */
 
 --Default Parameters (Synapse cant do default parameters at declaration)
@@ -674,7 +675,7 @@ SELECT @Tables =coalesce(@Tables,'ALL')
 	SELECT * FROM (
 		SELECT TOP 1000000 s.[object_id], s.[schema_name], s.[table_name], 'ALL' as stats_name, s.[stats_row_count], s.[actual_row_count], s.[stats_difference_percent]
 		, 'UPDATE STATISTICS ' + quotename(s.[schema_name]) + '.' + quotename(s.[table_name]) 
-		+ coalesce(case when @StatisticsSample =100 THEN ' WITH FULLSCAN' ELSE  ' WITH SAMPLE ' + convert(varchar,@StatisticsSample)  + ' PERCENT' END,'')
+		+ coalesce(case when coalesce(@StatisticsSample , s.[stats_sample_rate]) =100 THEN ' WITH FULLSCAN' ELSE  ' WITH SAMPLE ' + convert(varchar,coalesce(@StatisticsSample , s.[stats_sample_rate]))  + ' PERCENT' END,'')
 		as SqlCommand
 		, convert(bigint,SQRT(1000 * s.[actual_row_count]))  as UpdateLevel
 		,'<ExtendedInfo><StatsRowCount>' + convert (varchar, s.stats_row_count) + '</StatsRowCount><ActualRowCount>' + convert (varchar, s.actual_row_count) + '</ActualRowCount><UpdateLevel>' + convert (varchar,convert(bigint,SQRT(1000 * s.[actual_row_count])))  + '</UpdateLevel></ExtendedInfo>' as ExtendedInfo
@@ -689,7 +690,7 @@ SELECT @Tables =coalesce(@Tables,'ALL')
 		UNION ALL 
 			SELECT TOP 1000000 s.[object_id], s.[schema_name], s.[table_name], s.stat_name as stats_name, s.[stats_row_count], s.[actual_row_count], s.[stats_difference_percent]
 		, 'UPDATE STATISTICS ' + quotename(s.[schema_name]) + '.' + quotename(s.[table_name]) + '(' + s.stat_name + ')'
-		+ coalesce(case when @StatisticsSample =100 THEN ' WITH FULLSCAN' ELSE  ' WITH SAMPLE ' + convert(varchar,@StatisticsSample)  + ' PERCENT' END,'')
+		+ coalesce(case when coalesce(@StatisticsSample , s.[stats_sample_rate]) =100 THEN ' WITH FULLSCAN' ELSE  ' WITH SAMPLE ' + convert(varchar,coalesce(@StatisticsSample , s.[stats_sample_rate]))  + ' PERCENT' END,'')
 		as SqlCommand
 		, convert(bigint,SQRT(1000 * s.[actual_row_count]))  as UpdateLevel
 		,'<ExtendedInfo><StatsRowCount>' + convert (varchar, s.stats_row_count) + '</StatsRowCount><ActualRowCount>' + convert (varchar, s.actual_row_count) + '</ActualRowCount><UpdateLevel>' + convert (varchar,convert(bigint,SQRT(1000 * s.[actual_row_count])))  + '</UpdateLevel><Columns>' + s.stat_columns + '</Columns></ExtendedInfo>' as ExtendedInfo
@@ -774,10 +775,11 @@ SELECT @Tables =coalesce(@Tables,'ALL')
 			WHERE sys.stats.auto_created = 1
 				AND sc.stats_column_id = 1
 		)
-		INSERT INTO #rsStats (object_id, schema_name, table_name,  ExtendedInfo ,SqlCommand )
+		INSERT INTO #rsStats (object_id, schema_name, table_name, stats_name, ExtendedInfo ,SqlCommand )
 		SELECT t.object_id
 			,s.name AS schema_name
 			,t.name AS table_name
+			,  autostats.name  as stats_name
 			,'<ExtendedInfo><Column>' + c.name + '</Column><Overlapped>' + ss.name + '</Overlapped>' + '</ExtendedInfo>'
 			,'DROP STATISTICS [' + OBJECT_SCHEMA_NAME(ss.object_id) + '].[' + OBJECT_NAME(ss.object_id) + '].[' + autostats.name + ']' AS SqlCommand
 		FROM sys.stats ss
@@ -853,6 +855,4 @@ SELECT @Tables =coalesce(@Tables,'ALL')
  
 END
 GO
-
-
 

@@ -12,3 +12,4 @@ Get-Content -Path vStats.sql | Add-Content -Path $Solution
 Get-Content -Path vColumnStoreStats.sql | Add-Content -Path $Solution
 Get-Content -Path *Optimize.sql | Add-Content -Path $Solution
 
+Write-Host "Done"
