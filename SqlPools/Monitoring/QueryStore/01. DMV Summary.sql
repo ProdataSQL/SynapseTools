@@ -1,5 +1,7 @@
 /* Query Store DMV SUmmary for Syanpse SQL Pool */
 
+
+/* Core Query Store Data. Notice that CPU and memory not stored */ 
 SELECT TOP 10 *
 FROM [sys].[query_store_query];
 GO
