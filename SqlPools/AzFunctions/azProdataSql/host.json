@@ -1,0 +1,21 @@
+{
+  "version": "2.0",
+  "logging": {
+    "applicationInsights": {
+      "samplingSettings": {
+        "isEnabled": true,
+        "excludedTypes": "Request"
+      }
+    }
+  },
+  "extensionBundle": {
+    "id": "Microsoft.Azure.Functions.ExtensionBundle",
+    "version": "[2.*, 3.0.0)"
+  },
+  "managedDependency": {
+    "enabled": true
+  },
+  "functionTimeout": "00:10:00"
+,
+  "Subscription": "6fcdeaed-9120-4fb3-979b-fd3f522c5b9b"
+}
