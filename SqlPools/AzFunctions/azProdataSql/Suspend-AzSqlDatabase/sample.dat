@@ -1,5 +1,6 @@
 {
     "DatabaseName": "AdventureWorksDW",
-    "ServerName": "aw-dev.sql.azuresynapse.net",
+    "ServerName": "aw-dev.sql.azuresynapse.net"
+    
    
 }
