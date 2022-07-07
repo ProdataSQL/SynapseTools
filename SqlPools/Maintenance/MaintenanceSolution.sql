@@ -152,6 +152,7 @@ ALTER VIEW [dbo].[vStats] AS SELECT
 	Description:Return data on individual Statistics including last updated date
 	Source:		https://github.com/ProdataSQL/SynapseTools
 	History:	12/08/2021 Bob, Created
+				07/07/2022 Bov, Added Stats Sample Rate
 */
 ss.object_id, ss.name as stat_name  , vs.table_name, vs.schema_name
 , ss.stats_id, ss.auto_created, ss.filter_definition, STATS_DATE(ss.object_id, ss.stats_id) as last_updated_date
@@ -159,6 +160,7 @@ ss.object_id, ss.name as stat_name  , vs.table_name, vs.schema_name
 , vs.stats_row_count
 , vs.actual_row_count
 , vs.stats_difference_percent
+, vs.stats_sample_rate
 , 'UPDATE STATISTICS ' + quotename(vs.[schema_name]) + '.' + quotename(vs.[table_name])  + ' (' + ss.name  + ')'
 	+ coalesce(case when vs.stats_sample_rate  >=100 THEN ' WITH FULLSCAN' ELSE  ' WITH SAMPLE ' + convert(varchar,vs.stats_sample_rate)  + ' PERCENT' END,'') as sqlCommand
 FROM sys.stats ss
@@ -180,10 +182,12 @@ EXEC dbo.sp_executesql @statement = N'CREATE VIEW [dbo].[vColumnstoreStats] AS S
 GO
 ALTER VIEW [dbo].[vColumnstoreStats] AS WITH ColumnStats as ( 
 	/*
-		Description: View for querying ColumnStore Stats and Fragmentation.
-		used By: SyanpseColumnstoreOptimze SProc
-		History: 10/08/2021 Bob, Created for Synapse Dedicated Pools
-	*/
+		Description:View for querying ColumnStore Stats and Fragmentation.
+		used By:	ColumnstoreOptimze SProc
+		History: 
+					10/08/2021 Bob, Created for Synapse Dedicated Pools
+					07/07/2022 Bob, Adjusted density calculation if < 60 million
+ 	*/
 		SELECT t.object_id as object_id
 		, s.name AS [schema_name]
 		, t.name AS [table_name]
@@ -225,7 +229,7 @@ ALTER VIEW [dbo].[vColumnstoreStats] AS WITH ColumnStats as (
 	, sum(cs.open_row_count) as open_row_count
 	, max(cs.compressed_row_count)  as compressed_row_max
 	, avg(cs.compressed_row_count) as compressed_row_avg
-	, 100-convert(numeric(10,4),convert(float,avg(cs.compressed_row_count)) / max(cs.compressed_row_count))*100 as fragmentation_density
+	, 100-convert(numeric(10,4),convert(float,avg(cs.compressed_row_count)) / CASE WHEN sum(cs.compressed_row_count) > 60000000 then 1048576 else max(cs.compressed_row_count) end )*100 as fragmentation_density
 	, convert(numeric(10,4),convert(float,sum(cs.deleted_row_count)) / coalesce(max(cs.compressed_row_count),1048576)/60)*100 as fragmentation_deletes
 	, convert(numeric(10,4),convert(float,sum(cs.open_row_count)) / coalesce(max(cs.compressed_row_count),1048576)/60)*100 as fragmentation_open
 	FROM ColumnStats cs
@@ -237,6 +241,9 @@ GROUP BY cs.schema_name
 	, cs.index_name
 	, cs.object_id;
 GO
+
+
+
 
 
 SET ANSI_NULLS ON
