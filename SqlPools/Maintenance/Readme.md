@@ -88,8 +88,8 @@ exec [dbo].[ColumnstoreOptimize]   @Tables= '%.%',@DensityThreshold=-1, @OpenThr
 
 <HR>
 
-## StatsOptimise
-StatsOptimise is stored procedure for updating Statistics for Synapse SQL Pools. This can be critical for SQL Pools as while they support auto create of stats they do not support auto updte of statistics. This procedure is like a replacement for auto update and allows for more control and flexibility.
+## StatsOptimize
+StatsOptimize is stored procedure for updating Statistics for Synapse SQL Pools. This can be critical for SQL Pools as while they support auto create of stats they do not support auto updte of statistics. This procedure is like a replacement for auto update and allows for more control and flexibility.
 
 Key features include:
 - Dynamic determine modification level based on imporved algorithm.
