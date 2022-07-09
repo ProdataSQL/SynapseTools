@@ -457,7 +457,7 @@ GO
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[StatsOptimize]') AND type in (N'P'))
 EXEC dbo.sp_executesql @statement = N'CREATE PROC [dbo].[StatsOptimize] AS SELECT 1 as Dummy'
 GO
-ALTER  PROC [dbo].[StatsOptimize] @Tables [varchar](4000),@StatisticsModificationLevel [int],@StatisticsSample [int],@OnlyModifiedStatistics [char](1),@DeleteOverlappingStats [char](1),@TimeLimit [int],@Execute [char](1) AS
+ALTER PROC [dbo].[StatsOptimize] @Tables [varchar](4000),@StatisticsModificationLevel [int],@StatisticsSample [int],@OnlyModifiedStatistics [char](1),@DeleteOverlappingStats [char](1),@TimeLimit [int],@Execute [char](1) AS
 BEGIN
 /*
 description:	Stats Maintenance for Synapse SQL Pools
@@ -487,10 +487,13 @@ Example:
 	exec dbo.[StatsOptimize] 'stg.%',0,null,null,null,null,null
 
 History:		12/08/2021 Bob, Created
-				31/08/2021 Bob, Added Adaptive SamplingRate. Fixerd bug in removing duplicate stats (null stats name)
+				31/08/2021 Bob, Added Adaptive SamplingRate. Fixed bug in removing duplicate stats (null stats name)
 */
 
 --Default Parameters (Synapse cant do default parameters at declaration)
+  SET NOCOUNT ON
+  SET ARITHABORT ON
+  SET NUMERIC_ROUNDABORT OFF
 SELECT @Tables =coalesce(@Tables,'ALL')
 	, @OnlyModifiedStatistics =coalesce(@OnlyModifiedStatistics,'Y')
 	, @StatisticsModificationLevel=coalesce(@StatisticsModificationLevel,null) --Default ius to sue new SQRT algorithm
@@ -498,9 +501,7 @@ SELECT @Tables =coalesce(@Tables,'ALL')
 	, @DeleteOverlappingStats =coalesce(@DeleteOverlappingStats,'N')
 	, @Execute=coalesce(@Execute,'Y')
 	
-  SET NOCOUNT ON
-  SET ARITHABORT ON
-  SET NUMERIC_ROUNDABORT OFF
+
 
   DECLARE @StartMessage nvarchar(max)
   DECLARE @EndMessage nvarchar(max)
@@ -707,6 +708,7 @@ SELECT @Tables =coalesce(@Tables,'ALL')
 			( s.stats_difference_percent >= @StatisticsModificationLevel and s.stats_difference_percent>0) 
 			OR (abs( [actual_row_count]- [stats_row_count]) >=  SQRT(1000 * s.[actual_row_count])  and s.[actual_row_count] > 0 )
 			)
+			AND (s.user_created=1 OR s.auto_created=1)
 		)
 	) a 
 
@@ -732,7 +734,6 @@ SELECT @Tables =coalesce(@Tables,'ALL')
 		RAISERROR('%s',10,1,@EndMessage) WITH NOWAIT
 		SET @StartMessage = 'SqlCommand: ' + @sqlCommand
 		RAISERROR('%s',10,1,@StartMessage) WITH NOWAIT
-		RAISERROR('%s',10,1,@ExtendedInfo) WITH NOWAIT
 			
 		IF @Execute='Y'
 		BEGIN
