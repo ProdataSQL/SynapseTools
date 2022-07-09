@@ -152,7 +152,8 @@ ALTER VIEW [dbo].[vStats] AS SELECT
 	Description:Return data on individual Statistics including last updated date
 	Source:		https://github.com/ProdataSQL/SynapseTools
 	History:	12/08/2021 Bob, Created
-				07/07/2022 Bov, Added Stats Sample Rate
+				07/07/2022 Bob, Added Stats Sample Rate
+				09/07/2022 Bob, Added user_created as we dont want to update system stats on CCS
 */
 ss.object_id, ss.name as stat_name  , vs.table_name, vs.schema_name
 , ss.stats_id, ss.auto_created, ss.filter_definition, STATS_DATE(ss.object_id, ss.stats_id) as last_updated_date
@@ -163,6 +164,7 @@ ss.object_id, ss.name as stat_name  , vs.table_name, vs.schema_name
 , vs.stats_sample_rate
 , 'UPDATE STATISTICS ' + quotename(vs.[schema_name]) + '.' + quotename(vs.[table_name])  + ' (' + ss.name  + ')'
 	+ coalesce(case when vs.stats_sample_rate  >=100 THEN ' WITH FULLSCAN' ELSE  ' WITH SAMPLE ' + convert(varchar,vs.stats_sample_rate)  + ' PERCENT' END,'') as sqlCommand
+, ss.user_created
 FROM sys.stats ss
 INNER JOIN (
 	select sc.object_id, sc.stats_id, string_agg(c.name, ',') as stat_columns
@@ -171,6 +173,7 @@ INNER JOIN (
 	GROUP BY sc.object_id, stats_id 
 ) sc on sc.object_id=ss.object_id and sc.stats_id=ss.stats_id
 INNER JOIN dbo.vTableStats vs on vs.object_id=ss.object_id;
+GO
 GO
 
 SET ANSI_NULLS ON
@@ -241,9 +244,6 @@ GROUP BY cs.schema_name
 	, cs.index_name
 	, cs.object_id;
 GO
-
-
-
 
 
 SET ANSI_NULLS ON
