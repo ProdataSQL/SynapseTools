@@ -1,5 +1,5 @@
 # Maintenance Solution
-<a href="[https://stackoverflow.com/](https://www.youtube.com/embed/G73WcVxPNmk)"><img src="[RELATIVE_PATH_TO_IMAGE](https://user-images.githubusercontent.com/19823837/196261541-ed86c81c-2b54-4940-9340-d22615f3f4d7.png)"></img></a>
+<a href="[https://stackoverflow.com/](https://www.youtube.com/embed/G73WcVxPNmk)"><img src="https://user-images.githubusercontent.com/19823837/196261541-ed86c81c-2b54-4940-9340-d22615f3f4d7.png)"></img></a>
  
 
 ## ColumnstoreOptimize
