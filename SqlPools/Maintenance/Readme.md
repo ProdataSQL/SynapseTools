@@ -1,10 +1,7 @@
 # Maintenance Solution
 
-[<img src="https://user-images.githubusercontent.com/19823837/196262104-9316f872-970a-4e0d-ad3e-5e38930ceeb9.png">](https://www.youtube.com/watch?v=3HIr0imLgxM))
+[<img src="https://user-images.githubusercontent.com/19823837/196262104-9316f872-970a-4e0d-ad3e-5e38930ceeb9.png">](https://www.youtube.com/embed/G73WcVxPNmk)
 
-![Cool Runnings Video](https://user-images.githubusercontent.com/19823837/196262104-9316f872-970a-4e0d-ad3e-5e38930ceeb9.png)[(Youtube)]([https://www.youtube.com/watch?v=3HIr0imLgxM](https://www.youtube.com/embed/G73WcVxPNmk))
-
-![image search api](https://user-images.githubusercontent.com/110724391/184472398-c590b47c-e1f2-41f8-87e6-2a1f68e8850d.png)[(Youtube)](https://www.youtube.com/watch?v=3HIr0imLgxM)
 
 ## ColumnstoreOptimize
 ColumnstoreOptimize is stored procedure for maintaining columnstore indexes in SQL dedicated Pools. Key features include.
